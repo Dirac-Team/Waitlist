@@ -1,50 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Github, Instagram, Linkedin, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
 
-type AvatarProps = {
-  imageSrc: string;
-  delay: number;
-};
 
-const Avatar: React.FC<AvatarProps> = ({ imageSrc, delay }) => {
-  return (
-    <div 
-      className="relative h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10 rounded-full overflow-hidden border-2 border-gray-700 shadow-lg animate-fadeIn"
-      style={{ animationDelay: `${delay}ms` }}
-    >
-      <img 
-        src={imageSrc} 
-        alt="User avatar" 
-        className="h-full w-full object-cover"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-    </div>
-  );
-};
-
-const TrustElements: React.FC = () => {
-  const avatars = [
-    "https://images.pexels.com/photos/2726111/pexels-photo-2726111.jpeg?auto=compress&cs=tinysrgb&w=100",
-    "https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=100",
-    "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=100",
-    "https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=100",
-  ];
-
-  return (
-    <div className="inline-flex items-center space-x-4 bg-gray-900/60 backdrop-blur-sm rounded-full py-3 px-5 text-sm sm:text-base">
-      <div className="flex -space-x-3">
-        {avatars.map((avatar, index) => (
-          <Avatar key={index} imageSrc={avatar} delay={index * 200} />
-        ))}
-      </div>
-      <p className="text-white animate-fadeIn whitespace-nowrap" style={{ animationDelay: '800ms' }}>
-        <span className="text-white font-semibold">2.4K</span> currently on the waitlist
-      </p>
-    </div>
-  );
-};
 
 const WaitlistForm: React.FC = () => {
   const [email, setEmail] = useState('');
