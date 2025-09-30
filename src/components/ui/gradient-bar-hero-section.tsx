@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Github, Instagram, Linkedin, Menu, X } from 'lucide-react';
+import { Github, Instagram, Linkedin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
 
@@ -148,7 +148,6 @@ const GradientBars: React.FC = () => {
 };
 
 const Navbar: React.FC = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-transparent py-6 px-6 md:px-12">
@@ -156,57 +155,16 @@ const Navbar: React.FC = () => {
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <span className="text-white font-bold text-xl tracking-tighter">
-              Mora
+              Dirac
             </span>
           </div>
 
-          <div className="hidden md:flex items-center space-x-8">
-            <a href="#features" className="text-gray-300 hover:text-white transition-colors duration-300">
-              Features
-            </a>
-            <a href="#manifesto" className="text-gray-300 hover:text-white transition-colors duration-300">
-              Manifesto
-            </a>
-            <a href="#pricing" className="text-gray-300 hover:text-white transition-colors duration-300">
-              Pricing
-            </a>
-            <a href="#contact" className="text-gray-300 hover:text-white transition-colors duration-300">
-              Contact
-            </a>
-            <button className="bg-white hover:bg-gray-100 text-black px-5 py-2 rounded-full transition-all duration-300 transform hover:scale-105">
-              Join The Waitlist
-            </button>
-          </div>
 
-          <div className="md:hidden">
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-white">
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
+
+
         </div>
 
-        {isMenuOpen && (
-          <div className="md:hidden mt-4 bg-gray-900 bg-opacity-95 backdrop-blur-sm rounded-lg p-4 animate-fadeIn">
-            <div className="flex flex-col space-y-4">
-              <a href="#features" className="text-gray-300 hover:text-white transition-colors duration-300 py-2">
-                Features
-              </a>
-              <a href="#manifesto" className="text-gray-300 hover:text-white transition-colors duration-300 py-2">
-                Manifesto
-              </a>
-              <a href="#pricing" className="text-gray-300 hover:text-white transition-colors duration-300 py-2">
-                Pricing
-              </a>
-              <a href="#contact" className="text-gray-300 hover:text-white transition-colors duration-300 py-2">
-                Contact
-              </a>
-              <button className="bg-white hover:bg-gray-100 text-black px-5 py-2 rounded-full transition-all duration-300 w-full">
-                Join The Waitlist
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
+        </div>
     </nav>
   );
 };
