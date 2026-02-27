@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Resend } from "resend";
 import { supabase } from "@/lib/supabase";
+import { buildWelcomeEmail } from "@/lib/emails/welcome";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function GET() {
   const { count, error } = await supabase
@@ -32,9 +36,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const normalizedEmail = email.toLowerCase();
+
     const { error } = await supabase
       .from("waitlist")
-      .insert({ email: email.toLowerCase() });
+      .insert({ email: normalizedEmail });
 
     if (error) {
       if (error.code === "23505") {
@@ -58,8 +64,19 @@ export async function POST(request: NextRequest) {
       .from("waitlist")
       .select("*", { count: "exact", head: true });
 
+    const position = count ?? 1;
+
+    resend.emails
+      .send({
+        from: "Dirac <onboarding@resend.dev>",
+        to: normalizedEmail,
+        subject: "You're on the list",
+        html: buildWelcomeEmail(position),
+      })
+      .catch(() => {});
+
     return NextResponse.json(
-      { message: "You're in!", count: count ?? 0 },
+      { message: "You're in!", count: position },
       { status: 201 }
     );
   } catch {
