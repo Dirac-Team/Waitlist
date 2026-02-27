@@ -68,12 +68,14 @@ export async function POST(request: NextRequest) {
 
     resend.emails
       .send({
-        from: "Dirac <onboarding@resend.dev>",
+        from: "Peter from Dirac <peter@dirac.app>",
         to: normalizedEmail,
         subject: "You're on the list",
         html: buildWelcomeEmail(position),
       })
-      .catch(() => {});
+      .catch((err) => {
+        console.error("Resend error:", err);
+      });
 
     return NextResponse.json(
       { message: "You're in!", count: position },
