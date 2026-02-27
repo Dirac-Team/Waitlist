@@ -66,16 +66,16 @@ export async function POST(request: NextRequest) {
 
     const position = count ?? 1;
 
-    resend.emails
-      .send({
-        from: "Peter from Dirac <peter@dirac.app>",
-        to: normalizedEmail,
-        subject: "You're on the list",
-        html: buildWelcomeEmail(position),
-      })
-      .catch((err) => {
-        console.error("Resend error:", err);
-      });
+    const { error: resendError } = await resend.emails.send({
+      from: "Peter from Dirac <peter@dirac.app>",
+      to: normalizedEmail,
+      subject: "You're on the list",
+      html: buildWelcomeEmail(position),
+    });
+
+    if (resendError) {
+      console.error("Resend error:", resendError);
+    }
 
     return NextResponse.json(
       { message: "You're in!", count: position },
