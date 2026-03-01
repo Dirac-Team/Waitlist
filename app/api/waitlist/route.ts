@@ -19,7 +19,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const { email } = await request.json();
+    const { email, heard_from, messaging_apps, role } = await request.json();
 
     if (!email || typeof email !== "string") {
       return NextResponse.json(
@@ -40,7 +40,12 @@ export async function POST(request: NextRequest) {
 
     const { error } = await supabase
       .from("waitlist")
-      .insert({ email: normalizedEmail });
+      .insert({
+        email: normalizedEmail,
+        heard_from: heard_from ?? null,
+        messaging_apps: messaging_apps ?? null,
+        role: role ?? null,
+      });
 
     if (error) {
       if (error.code === "23505") {
