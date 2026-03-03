@@ -215,7 +215,7 @@ function HeroGeometric({
             initial="hidden"
             animate="visible"
           >
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-5 md:mb-6 tracking-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-normal mb-5 md:mb-6 tracking-normal" style={{ fontFamily: "var(--font-instrument-serif)" }}>
               <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/80">
                 {title1}
               </span>
