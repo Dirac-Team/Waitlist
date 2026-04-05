@@ -5,6 +5,15 @@ import { buildWelcomeEmail } from "@/lib/emails/welcome";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+type SurveyPayload = {
+  reply_pct?: string;
+  frustration?: string;
+  professional_role?: string;
+  inbox_role?: string;
+  cost_of_miss?: string;
+  email_types?: string[];
+};
+
 export async function GET() {
   const { count, error } = await supabase
     .from("waitlist")
@@ -19,7 +28,8 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, heard_from, messaging_apps, role } = await request.json();
+    const body = await request.json();
+    const { email, ...rest } = body as { email?: string } & SurveyPayload;
 
     if (!email || typeof email !== "string") {
       return NextResponse.json(
@@ -36,16 +46,49 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const survey: SurveyPayload = {
+      reply_pct: typeof rest.reply_pct === "string" ? rest.reply_pct : undefined,
+      frustration:
+        typeof rest.frustration === "string" ? rest.frustration : undefined,
+      professional_role:
+        typeof rest.professional_role === "string"
+          ? rest.professional_role
+          : undefined,
+      inbox_role:
+        typeof rest.inbox_role === "string" ? rest.inbox_role : undefined,
+      cost_of_miss:
+        typeof rest.cost_of_miss === "string" ? rest.cost_of_miss : undefined,
+      email_types: Array.isArray(rest.email_types)
+        ? rest.email_types.filter((x) => typeof x === "string")
+        : undefined,
+    };
+
+    const missing =
+      !survey.reply_pct ||
+      !survey.frustration ||
+      !survey.professional_role ||
+      !survey.inbox_role ||
+      !survey.cost_of_miss ||
+      !survey.email_types?.length;
+
+    if (missing) {
+      return NextResponse.json(
+        { error: "Please answer all questions" },
+        { status: 400 }
+      );
+    }
+
     const normalizedEmail = email.toLowerCase();
 
-    const { error } = await supabase
-      .from("waitlist")
-      .insert({
-        email: normalizedEmail,
-        heard_from: heard_from ?? null,
-        messaging_apps: messaging_apps ?? null,
-        role: role ?? null,
-      });
+    const { error } = await supabase.from("waitlist").insert({
+      email: normalizedEmail,
+      reply_pct: survey.reply_pct,
+      frustration: survey.frustration,
+      role: survey.professional_role,
+      inbox_role: survey.inbox_role,
+      cost_of_miss: survey.cost_of_miss,
+      email_types: survey.email_types!.join(" | "),
+    });
 
     if (error) {
       if (error.code === "23505") {
@@ -59,6 +102,7 @@ export async function POST(request: NextRequest) {
         );
       }
 
+      console.error("Supabase insert error:", error);
       return NextResponse.json(
         { error: "Something went wrong" },
         { status: 500 }
