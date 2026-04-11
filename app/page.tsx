@@ -174,7 +174,7 @@ export default function Home() {
       </p>
 
       <HeroGeometric
-        badge="Launching March 2026"
+        badge="Launching April 2026"
         title1="Email is"
         title2="Busy Work"
       >
